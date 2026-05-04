@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { CheckCircle2, MapPin, Loader2, Map as MapIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LiveMap } from "./LiveMap";
 
 const HOLD_MS = 5000;
 
