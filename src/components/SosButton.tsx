@@ -204,6 +204,11 @@ export function SosButton() {
               Accuracy: ±{Math.round(status.coords.accuracy)} m
             </div>
           </div>
+          <LiveMap
+            lat={status.coords.latitude}
+            lng={status.coords.longitude}
+            accuracy={status.coords.accuracy}
+          />
           <a
             href={`https://www.google.com/maps?q=${status.coords.latitude},${status.coords.longitude}`}
             target="_blank"
