@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { CheckCircle2, MapPin, Loader2, Map as MapIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LiveMap } from "./LiveMap";
 
 const HOLD_MS = 5000;
 
@@ -204,6 +205,11 @@ export function SosButton() {
               Accuracy: ±{Math.round(status.coords.accuracy)} m
             </div>
           </div>
+          <LiveMap
+            lat={status.coords.latitude}
+            lng={status.coords.longitude}
+            accuracy={status.coords.accuracy}
+          />
           <a
             href={`https://www.google.com/maps?q=${status.coords.latitude},${status.coords.longitude}`}
             target="_blank"
