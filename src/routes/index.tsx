@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SosButton } from "@/components/SosButton";
+import { LocationPermission } from "@/components/LocationPermission";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -15,6 +16,7 @@ function Index() {
             Press and hold the button for 5 seconds to share your location
           </p>
         </div>
+        <LocationPermission />
         <SosButton />
       </div>
     </main>
