@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CheckCircle2, MapPin, Loader2 } from "lucide-react";
+import { CheckCircle2, MapPin, Loader2, Map as MapIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const HOLD_MS = 5000;
@@ -208,9 +208,10 @@ export function SosButton() {
             href={`https://www.google.com/maps?q=${status.coords.latitude},${status.coords.longitude}`}
             target="_blank"
             rel="noreferrer"
-            className="inline-block text-sm text-emerald-700 underline underline-offset-4"
+            className="mt-1 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700"
           >
-            Open in Google Maps →
+            <MapIcon className="h-4 w-4" />
+            See location on map
           </a>
           <div>
             <button
