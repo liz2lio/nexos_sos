@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { CheckCircle2, MapPin, Loader2, Map as MapIcon } from "lucide-react";
+import { CheckCircle2, MapPin, Loader2, Map as MapIcon, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LiveMap } from "./LiveMap";
 
 const HOLD_MS = 5000;
+const SENT_MS = 7000;
 
 type Status =
   | { phase: "idle" }
@@ -16,12 +17,15 @@ export function SosButton() {
   const [status, setStatus] = useState<Status>({ phase: "idle" });
   const [holding, setHolding] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [sosSent, setSosSent] = useState(false);
+  const [sentAt, setSentAt] = useState<Date | null>(null);
 
   const startRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);
   const watchIdRef = useRef<number | null>(null);
   const coordsRef = useRef<GeolocationCoordinates | null>(null);
   const completedRef = useRef(false);
+  const sentTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const cleanup = () => {
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
@@ -38,7 +42,7 @@ export function SosButton() {
   useEffect(() => () => cleanup(), []);
 
   const start = () => {
-    if (holding || status.phase === "acquired") return;
+    if (holding) return;
     setStatus({ phase: "gathering", progress: 0 });
     setProgress(0);
     setHolding(true);
@@ -83,9 +87,15 @@ export function SosButton() {
       if (elapsed >= HOLD_MS) {
         if (coordsRef.current) {
           completedRef.current = true;
-          setStatus({ phase: "acquired", coords: coordsRef.current });
+          const coords = coordsRef.current;
+          setStatus({ phase: "acquired", coords });
           setHolding(false);
           cleanup();
+          if (sentTimerRef.current) clearTimeout(sentTimerRef.current);
+          sentTimerRef.current = setTimeout(() => {
+            setSosSent(true);
+            setSentAt(new Date());
+          }, SENT_MS - HOLD_MS);
           return;
         }
         // wait a bit more for coords
@@ -109,6 +119,10 @@ export function SosButton() {
   const reset = () => {
     setProgress(0);
     setStatus({ phase: "idle" });
+    setSosSent(false);
+    setSentAt(null);
+    if (sentTimerRef.current) clearTimeout(sentTimerRef.current);
+    sentTimerRef.current = null;
     cleanup();
   };
 
@@ -128,6 +142,16 @@ export function SosButton() {
   })();
 
   const barPct = status.phase === "acquired" ? 100 : Math.round(progress * 100);
+
+  const isUpdate = status.phase === "acquired" || sosSent;
+  const buttonLabel = isUpdate ? (
+    <span className="flex flex-col items-center leading-tight">
+      <span className="text-2xl">SOS</span>
+      <span className="text-xs font-semibold tracking-wider mt-1">UPDATE LOCATION</span>
+    </span>
+  ) : (
+    <span>SOS</span>
+  );
 
   return (
     <div className="w-full flex flex-col items-center gap-8">
@@ -184,12 +208,24 @@ export function SosButton() {
         )}
       >
         <span className="absolute inset-0 flex items-center justify-center drop-shadow-md">
-          SOS
+          {buttonLabel}
         </span>
         {holding && (
           <span className="pointer-events-none absolute inset-0 rounded-full animate-ping bg-red-500/40" />
         )}
       </button>
+
+      {sosSent && (
+        <div className="w-full rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-3 flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-semibold">
+          <Send className="h-4 w-4" />
+          <span>SOS sent</span>
+          {sentAt && (
+            <span className="ml-auto text-xs font-normal text-muted-foreground">
+              {sentAt.toLocaleTimeString()}
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Result */}
       {status.phase === "acquired" && (
