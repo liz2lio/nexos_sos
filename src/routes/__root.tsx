@@ -37,6 +37,10 @@ export const Route = createRootRoute({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Nexos SOS" },
+      { name: "twitter:description", content: "Nexos SOS — emergency location sharing" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/aeaaaf1e-ae69-4fdc-a391-7955c8a9559a/id-preview-da80f135--890d46bc-7e51-49a5-9fa3-59710ca0f0dd.lovable.app-1778008781017.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/aeaaaf1e-ae69-4fdc-a391-7955c8a9559a/id-preview-da80f135--890d46bc-7e51-49a5-9fa3-59710ca0f0dd.lovable.app-1778008781017.png" },
     ],
     links: [
       {
